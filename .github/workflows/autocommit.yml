@@ -2,12 +2,14 @@ name: Auto Combat
 
 on:
   schedule:
-    - cron: "0 1 * * *"   # Pasukan Fajar  (08.00 WIB)
-    - cron: "0 3 * * *"   # Pasukan Pagi   (10.00 WIB)
-    - cron: "0 5 * * *"   # Pasukan Siang  (12.00 WIB)
-    - cron: "0 7 * * *"   # Pasukan Senja  (14.00 WIB)
+    - cron: "0 1 * * *"    # Pasukan Fajar   (08.00 WIB)
+    - cron: "0 3 * * *"    # Pasukan Pagi    (10.00 WIB)
+    - cron: "0 5 * * *"    # Pasukan Siang   (12.00 WIB)
+    - cron: "0 7 * * *"    # Pasukan Senja   (14.00 WIB)
+    - cron: "0 9 * * *"    # Pasukan Sore    (16.00 WIB)
+    - cron: "0 11 * * *"   # Pasukan Malam   (18.00 WIB)
 
-  workflow_dispatch:       # Tombol panggil pasukan manual
+  workflow_dispatch:        # Tombol panggil pasukan manual
 
 permissions:
   contents: write
@@ -22,29 +24,61 @@ jobs:
         env:
           EVENT: ${{ github.event_name }}
         run: |
+          BENIH="pejuang"   # ganti kata ini untuk mengacak ulang seluruh pola libur
           ISTIRAHAT=false
-          ALASAN="Maju bertempur!"
 
           if [ "$EVENT" = "workflow_dispatch" ]; then
-            ALASAN="Dipanggil manual, pejuang wajib bertempur!"
+            echo "Dipanggil manual: pejuang wajib bertempur!"
           else
-            HARI=$(date -u +%u)
-            HASH=$(date -u +%Y%m%d | cksum | cut -d' ' -f1)
+            HARI_INI=$(( $(date -u +%s) / 86400 ))
+            POS=$(( $(date -u -d 2026-01-01 +%s) / 86400 ))
+            N=0
+            STATUS="kerja"
+            PANJANG=0
 
-            if [ "$HARI" = "7" ]; then
+            # Susun kalender: masa tempur dan masa libur bergantian dengan panjang acak
+            while true; do
+              # Masa tempur: 1 hari (15%), 2 hari (10%), atau 4-13 hari (75%)
+              H=$(echo "$BENIH-kerja-$N" | cksum | cut -d' ' -f1)
+              M=$(( H % 20 ))
+              if [ "$M" -le 2 ]; then PANJANG=1
+              elif [ "$M" -le 4 ]; then PANJANG=2
+              else PANJANG=$(( 4 + (H / 20) % 10 )); fi
+              if [ "$HARI_INI" -lt $(( POS + PANJANG )) ]; then STATUS="kerja"; break; fi
+              POS=$(( POS + PANJANG ))
+
+              # Masa libur: 1 hari (65%), 2 hari (25%), atau 7 hari (10%)
+              H=$(echo "$BENIH-libur-$N" | cksum | cut -d' ' -f1)
+              M=$(( H % 20 ))
+              if [ "$M" -le 12 ]; then PANJANG=1
+              elif [ "$M" -le 17 ]; then PANJANG=2
+              else PANJANG=7; fi
+              if [ "$HARI_INI" -lt $(( POS + PANJANG )) ]; then STATUS="libur"; break; fi
+              POS=$(( POS + PANJANG ))
+              N=$(( N + 1 ))
+            done
+
+            if [ "$STATUS" = "libur" ]; then
               ISTIRAHAT=true
-              ALASAN="Hari Minggu: hari suci, pejuang beristirahat."
-            elif [ $((HASH % 6)) -eq 0 ]; then
-              ISTIRAHAT=true
-              ALASAN="Hari pemulihan: pejuang mengobati luka."
-            elif [ $((RANDOM % 5)) -eq 0 ]; then
-              ISTIRAHAT=true
-              ALASAN="Pasukan ini tersesat di hutan belantara."
+              case "$PANJANG" in
+                1) echo "Libur sehari: pejuang menyeka keringat." ;;
+                2) echo "Libur dua hari: pejuang mengobati luka." ;;
+                *) echo "Libur seminggu: pejuang bertapa di gunung." ;;
+              esac
+            else
+              HH=$(echo "$BENIH-hari-$HARI_INI" | cksum | cut -d' ' -f1)
+              if [ $(( HH % 10 )) -lt 3 ]; then
+                echo "Hari lembur: seluruh pasukan menyerbu!"
+              elif [ $(( RANDOM % 5 )) -eq 0 ]; then
+                ISTIRAHAT=true
+                echo "Pasukan ini tersesat di hutan belantara."
+              else
+                echo "Hari tempur biasa: maju!"
+              fi
             fi
           fi
 
           echo "istirahat=$ISTIRAHAT" >> "$GITHUB_OUTPUT"
-          echo "$ALASAN"
 
       - name: Bangunkan pasukan (Checkout)
         if: steps.kalender.outputs.istirahat == 'false'
