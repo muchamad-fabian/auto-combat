@@ -102,7 +102,6 @@ Semua angka ada di langkah **Periksa kalender perang**:
 | Masa tempur lebih panjang | Ubah `4 + (H / 20) % 10` menjadi `7 + (H / 20) % 10` |
 | Pasukan lebih jarang tersesat | Ubah `RANDOM % 5` menjadi `RANDOM % 10` |
 | Lebih banyak hari lembur | Ubah angka `3` di `[ $(( HH % 10 )) -lt 3 ]` menjadi `5` |
-
 --- | :--- |
 | Pola libur sama sekali baru | Ganti kata di `BENIH="pejuang"` dengan kata lain |
 | Lebih sering libur seminggu | Ubah `else PANJANG=7` menjadi ambang lebih rendah, misalnya `M -le 15` pada baris libur 2 hari |
