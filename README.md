@@ -7,7 +7,7 @@
 <br/>
 
 [![Auto Combat](https://github.com/muchamad-fabian/auto-combat/actions/workflows/autocommit.yml/badge.svg)](https://github.com/muchamad-fabian/auto-combat/actions)
-![Pertempuran per Hari](https://img.shields.io/badge/pertempuran-4x%20sehari-e63946?style=for-the-badge&logo=github&logoColor=white)
+![Pertempuran per Hari](https://img.shields.io/badge/pertempuran-maks%204x%20sehari-e63946?style=for-the-badge&logo=github&logoColor=white)
 ![Ditenagai](https://img.shields.io/badge/ditenagai-GitHub%20Actions-2088FF?style=for-the-badge&logo=githubactions&logoColor=white)
 ![Biaya](https://img.shields.io/badge/biaya-GRATIS-2ea44f?style=for-the-badge)
 
@@ -35,7 +35,40 @@ Ia bukan manusia. Ia adalah **GitHub Actions**, dan tugasnya satu: membuat halam
 | 🌤️ 12.00 | 05.00 | Pasukan Siang |
 | 🌇 14.00 | 07.00 | Pasukan Senja |
 
-> ⏳ **Catatan:** Pasukan kadang datang terlambat beberapa menit sampai puluhan menit. Itu bukan pengkhianatan, memang begitulah cara GitHub mengatur barisannya.
+> ⏳ **Catatan:** Pasukan kadang datang terlambat beberapa menit sampai puluhan menit. Itu bukan pengkhianatan, memang begitulah cara GitHub mengatur barisannya. Tidak semua pasukan hadir setiap hari, lihat bagian **Hari Istirahat** di bawah.
+
+---
+
+## 🛌 Hari Istirahat Sang Pejuang
+
+Pejuang sejati juga butuh tidur. Supaya jejaknya tampak alami dan tidak seperti robot, sang pejuang **libur di hari-hari tertentu**:
+
+| Jenis Libur | Kapan | Keterangan |
+| :--- | :--- | :--- |
+| 🙏 Hari Suci | Setiap hari **Minggu** | Pasti libur, tanpa pengecualian |
+| 🩹 Hari Pemulihan | Sekitar **1 dari 6 hari** | Dipilih acak-tetap berdasarkan tanggal, jadi seluruh pasukan hari itu ikut libur |
+| 🌲 Tersesat di Hutan | Sekitar **1 dari 5 serangan** | Satu pasukan tidak datang, sisanya tetap bertempur |
+| 📣 Panggilan Manual | Kapan saja | Lewat tombol **Run workflow**, sang pejuang **selalu** bertempur |
+
+Hasilnya, jumlah commit per hari **berbeda-beda**: ada hari ramai, ada hari sepi, dan ada hari kosong. Persis seperti petualang sungguhan. 🏕️
+
+### 📝 Jurus dalam Setiap Commit
+
+Setiap kali bertempur, sang pejuang memilih **satu kisah acak** sebagai pesan commit, misalnya:
+
+> ⚔️ Menebas naga api di Gunung Merapi
+> 🛡️ Menahan serangan pasukan kegelapan di gerbang timur
+> 👑 Mengalahkan raja iblis di ujung petualangan
+
+Kisah yang sama juga ditulis ke file `LAST_UPDATED` bersama waktunya. Mau menambah jurus baru? Cukup tambahkan satu baris di dalam daftar `PESAN=( ... )` pada file workflow.
+
+### 🎚️ Mengatur Tingkat Kemalasan
+
+Semua angka libur ada di langkah **Periksa kalender perang**:
+
+- Ganti `HASH % 6` menjadi `HASH % 4` kalau ingin lebih sering libur, atau `% 10` kalau ingin lebih jarang
+- Ganti `RANDOM % 5` dengan angka lebih besar supaya pasukan jarang tersesat
+- Hapus blok `if [ "$HARI" = "7" ]` kalau tidak ingin libur hari Minggu
 
 ---
 
@@ -115,18 +148,68 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      - name: Periksa kalender perang
+        id: kalender
+        env:
+          EVENT: ${{ github.event_name }}
+        run: |
+          ISTIRAHAT=false
+          ALASAN="Maju bertempur!"
+
+          if [ "$EVENT" = "workflow_dispatch" ]; then
+            ALASAN="Dipanggil manual, pejuang wajib bertempur!"
+          else
+            HARI=$(date -u +%u)
+            HASH=$(date -u +%Y%m%d | cksum | cut -d' ' -f1)
+
+            if [ "$HARI" = "7" ]; then
+              ISTIRAHAT=true
+              ALASAN="Hari Minggu: hari suci, pejuang beristirahat."
+            elif [ $((HASH % 6)) -eq 0 ]; then
+              ISTIRAHAT=true
+              ALASAN="Hari pemulihan: pejuang mengobati luka."
+            elif [ $((RANDOM % 5)) -eq 0 ]; then
+              ISTIRAHAT=true
+              ALASAN="Pasukan ini tersesat di hutan belantara."
+            fi
+          fi
+
+          echo "istirahat=$ISTIRAHAT" >> "$GITHUB_OUTPUT"
+          echo "$ALASAN"
+
       - name: Bangunkan pasukan (Checkout)
+        if: steps.kalender.outputs.istirahat == 'false'
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
           ref: main
 
-      - name: Tinggalkan jejak pertempuran
-        run: |
-          date -u '+%Y-%m-%dT%H:%M:%SZ' > LAST_UPDATED
-
       - name: Catat kemenangan (Commit)
+        if: steps.kalender.outputs.istirahat == 'false'
         run: |
+          PESAN=(
+            "⚔️ Menebas naga api di Gunung Merapi"
+            "🛡️ Menahan serangan pasukan kegelapan di gerbang timur"
+            "🏹 Memanah musuh dari menara tertinggi"
+            "🔥 Membakar benteng para bandit hutan"
+            "🐉 Menaklukkan naga es di puncak Jayawijaya"
+            "🗡️ Mengasah pedang legendaris di tepi sungai"
+            "🏰 Merebut kembali istana dari tangan penyihir jahat"
+            "🌙 Berburu monster di bawah cahaya bulan purnama"
+            "⚡ Menyambar pasukan musuh dengan jurus kilat"
+            "🐺 Mengalahkan serigala raksasa penjaga lembah"
+            "🌋 Melintasi lautan lava demi sebuah kemenangan"
+            "👑 Mengalahkan raja iblis di ujung petualangan"
+            "🧙 Memecahkan kutukan kuno di dalam gua rahasia"
+            "🚩 Mengibarkan bendera kemenangan di medan perang"
+          )
+          PILIH="${PESAN[$RANDOM % ${#PESAN[@]}]}"
+
+          {
+            date -u '+%Y-%m-%dT%H:%M:%SZ'
+            echo "$PILIH"
+          } > LAST_UPDATED
+
           git config user.name "NAMA_GITHUB_ANDA"
           git config user.email "PASTE_EMAIL_NOREPLY_ANDA_DI_SINI"
 
@@ -137,9 +220,10 @@ jobs:
             exit 0
           fi
 
-          git commit -m "chore(combat): sang pejuang telah bertempur"
+          git commit -m "$PILIH"
 
       - name: Kirim laporan ke istana (Push)
+        if: steps.kalender.outputs.istirahat == 'false'
         run: |
           git pull --rebase origin main
           git push origin main
@@ -222,6 +306,7 @@ Kadang butuh **beberapa jam** sebelum kemenangan tampil di layar. Bersabarlah, w
 <br/>
 
 - Jadwal GitHub sering terlambat, itu normal
+- Mungkin sedang hari libur sang pejuang (Minggu, hari pemulihan, atau pasukan tersesat). Coba klik **Run workflow** untuk memastikan
 - Repo yang lama tidak ada aktivitas bisa dinonaktifkan otomatis oleh GitHub. Buka tab **Actions** dan aktifkan kembali kalau ada tombolnya
 
 </details>
@@ -259,7 +344,7 @@ Bisa. Ubah baris `cron` di file workflow. Gunakan [crontab.guru](https://crontab
 
 <br/>
 
-**⚔️ Kotak hijau bukan akhir dari petualangan, hanya awal dari legenda. ⚔️**
+**⚔️ Kotak hijau bukan akhir dari petualangan, tetapi hanya awal dari legenda. ⚔️**
 
 <img src="https://capsule-render.vercel.app/api?type=waving&color=gradient&customColorList=12,20,24&height=120&section=footer" alt="Footer" />
 
