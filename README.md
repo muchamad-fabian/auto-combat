@@ -7,7 +7,7 @@
 <br/>
 
 [![Auto Combat](https://github.com/muchamad-fabian/auto-combat/actions/workflows/autocommit.yml/badge.svg)](https://github.com/muchamad-fabian/auto-combat/actions)
-![Pertempuran per Hari](https://img.shields.io/badge/pertempuran-maks%204x%20sehari-e63946?style=for-the-badge&logo=github&logoColor=white)
+![Pertempuran per Hari](https://img.shields.io/badge/pertempuran-maks%206x%20sehari-e63946?style=for-the-badge&logo=github&logoColor=white)
 ![Ditenagai](https://img.shields.io/badge/ditenagai-GitHub%20Actions-2088FF?style=for-the-badge&logo=githubactions&logoColor=white)
 ![Biaya](https://img.shields.io/badge/biaya-GRATIS-2ea44f?style=for-the-badge)
 
@@ -34,6 +34,8 @@ Ia bukan manusia. Ia adalah **GitHub Actions**, dan tugasnya satu: membuat halam
 | ☀️ 10.00 | 03.00 | Pasukan Pagi |
 | 🌤️ 12.00 | 05.00 | Pasukan Siang |
 | 🌇 14.00 | 07.00 | Pasukan Senja |
+| 🌆 16.00 | 09.00 | Pasukan Sore |
+| 🌃 18.00 | 11.00 | Pasukan Malam |
 
 > ⏳ **Catatan:** Pasukan kadang datang terlambat beberapa menit sampai puluhan menit. Itu bukan pengkhianatan, memang begitulah cara GitHub mengatur barisannya. Tidak semua pasukan hadir setiap hari, lihat bagian **Hari Istirahat** di bawah.
 
@@ -41,16 +43,42 @@ Ia bukan manusia. Ia adalah **GitHub Actions**, dan tugasnya satu: membuat halam
 
 ## 🛌 Hari Istirahat Sang Pejuang
 
-Pejuang sejati juga butuh tidur. Supaya jejaknya tampak alami dan tidak seperti robot, sang pejuang **libur di hari-hari tertentu**:
+Pejuang sejati bukan robot. Ia **rajin bertempur**, tapi kadang juga butuh istirahat. Tidak ada hari libur tetap, semuanya **acak dan berbeda setiap saat**.
 
-| Jenis Libur | Kapan | Keterangan |
-| :--- | :--- | :--- |
-| 🙏 Hari Suci | Setiap hari **Minggu** | Pasti libur, tanpa pengecualian |
-| 🩹 Hari Pemulihan | Sekitar **1 dari 6 hari** | Dipilih acak-tetap berdasarkan tanggal, jadi seluruh pasukan hari itu ikut libur |
-| 🌲 Tersesat di Hutan | Sekitar **1 dari 5 serangan** | Satu pasukan tidak datang, sisanya tetap bertempur |
-| 📣 Panggilan Manual | Kapan saja | Lewat tombol **Run workflow**, sang pejuang **selalu** bertempur |
+### 🗓️ Ritme Tempur dan Libur
 
-Hasilnya, jumlah commit per hari **berbeda-beda**: ada hari ramai, ada hari sepi, dan ada hari kosong. Persis seperti petualang sungguhan. 🏕️
+Kalender perang disusun dari **masa tempur** dan **masa libur** yang bergantian dengan panjang acak:
+
+| Masa | Panjang | Peluang | Cerita |
+| :--- | :---: | :---: | :--- |
+| ⚔️ Tempur maraton | 4 - 13 hari | 75% | Pejuang sedang semangat-semangatnya |
+| ⚔️ Tempur pendek | 1 - 2 hari | 25% | Masuk sebentar, lalu libur lagi |
+| 💤 Libur sehari | 1 hari | 65% | Menyeka keringat, besok masuk lagi |
+| 🩹 Libur dua hari | 2 hari | 25% | Mengobati luka |
+| 🏔️ Libur seminggu | 7 hari | 10% | Bertapa di gunung |
+
+Karena panjang masa tempur bisa cuma 1 hari, kadang muncul pola **"libur, masuk, libur lagi"**. Kadang juga pejuang bertempur belasan hari tanpa henti. Secara rata-rata, **sekitar 80% hari adalah hari tempur**.
+
+Contoh 42 hari pertama mulai 24 September 2026 (🟩 = tempur, ⬛ = libur):
+
+```
+🟩🟩🟩🟩🟩🟩🟩⬛🟩🟩🟩🟩🟩🟩
+🟩🟩⬛⬛🟩⬛🟩🟩🟩🟩⬛🟩🟩🟩
+🟩🟩⬛⬛🟩🟩🟩🟩🟩🟩🟩🟩🟩🟩
+```
+
+> Kalender ini **stabil untuk satu hari yang sama**: semua pasukan pada hari itu sepakat apakah libur atau tidak, jadi tidak ada hari setengah-setengah yang aneh.
+
+### 🔥 Intensitas Hari Tempur
+
+Di hari tempur pun, tidak semuanya sama:
+
+| Jenis Hari | Peluang | Keterangan |
+| :--- | :---: | :--- |
+| 🔥 Hari lembur | 30% | Seluruh 6 pasukan menyerbu tanpa ada yang absen |
+| ⚔️ Hari biasa | 70% | Tiap pasukan punya peluang 20% tersesat di hutan, jadi kira-kira 4 - 5 commit |
+
+Ditambah **Panggilan Manual** (tombol **Run workflow**): dijalankan kapan saja, sang pejuang **selalu** bertempur.
 
 ### 📝 Jurus dalam Setiap Commit
 
@@ -62,13 +90,26 @@ Setiap kali bertempur, sang pejuang memilih **satu kisah acak** sebagai pesan co
 
 Kisah yang sama juga ditulis ke file `LAST_UPDATED` bersama waktunya. Mau menambah jurus baru? Cukup tambahkan satu baris di dalam daftar `PESAN=( ... )` pada file workflow.
 
-### 🎚️ Mengatur Tingkat Kemalasan
+### 🎚️ Mengatur Tingkat Kerajinan
 
-Semua angka libur ada di langkah **Periksa kalender perang**:
+Semua angka ada di langkah **Periksa kalender perang**:
 
-- Ganti `HASH % 6` menjadi `HASH % 4` kalau ingin lebih sering libur, atau `% 10` kalau ingin lebih jarang
-- Ganti `RANDOM % 5` dengan angka lebih besar supaya pasukan jarang tersesat
-- Hapus blok `if [ "$HARI" = "7" ]` kalau tidak ingin libur hari Minggu
+| Ingin | Ubah bagian ini |
+| :--- | :--- |
+| Pola libur sama sekali baru | Ganti kata di `BENIH="pejuang"` dengan kata lain |
+| Libur seminggu lebih sering | Pada baris libur, ubah angka `17` di `elif [ "$M" -le 17 ]` menjadi `15` |
+| Libur sehari lebih jarang | Pada baris libur, ubah angka `12` di `if [ "$M" -le 12 ]` menjadi `8` |
+| Masa tempur lebih panjang | Ubah `4 + (H / 20) % 10` menjadi `7 + (H / 20) % 10` |
+| Pasukan lebih jarang tersesat | Ubah `RANDOM % 5` menjadi `RANDOM % 10` |
+| Lebih banyak hari lembur | Ubah angka `3` di `[ $(( HH % 10 )) -lt 3 ]` menjadi `5` |
+
+--- | :--- |
+| Pola libur sama sekali baru | Ganti kata di `BENIH="pejuang"` dengan kata lain |
+| Lebih sering libur seminggu | Ubah `else PANJANG=7` menjadi ambang lebih rendah, misalnya `M -le 15` pada baris libur 2 hari |
+| Masa tempur lebih panjang | Ubah `4 + (H / 20) % 10` menjadi `7 + (H / 20) % 10` |
+| Pasukan lebih jarang tersesat | Ubah `RANDOM % 5` menjadi `RANDOM % 10` |
+| Lebih banyak hari lembur | Ubah `HH % 10 ) -lt 3` menjadi `-lt 5` |
+| Tidak pernah libur sama sekali | Hapus seluruh isi `while true; do ... done` dan pakai `ISTIRAHAT=false` |
 
 ---
 
@@ -133,12 +174,14 @@ name: Auto Combat
 
 on:
   schedule:
-    - cron: "0 1 * * *"   # Pasukan Fajar  (08.00 WIB)
-    - cron: "0 3 * * *"   # Pasukan Pagi   (10.00 WIB)
-    - cron: "0 5 * * *"   # Pasukan Siang  (12.00 WIB)
-    - cron: "0 7 * * *"   # Pasukan Senja  (14.00 WIB)
+    - cron: "0 1 * * *"    # Pasukan Fajar   (08.00 WIB)
+    - cron: "0 3 * * *"    # Pasukan Pagi    (10.00 WIB)
+    - cron: "0 5 * * *"    # Pasukan Siang   (12.00 WIB)
+    - cron: "0 7 * * *"    # Pasukan Senja   (14.00 WIB)
+    - cron: "0 9 * * *"    # Pasukan Sore    (16.00 WIB)
+    - cron: "0 11 * * *"   # Pasukan Malam   (18.00 WIB)
 
-  workflow_dispatch:       # Tombol panggil pasukan manual
+  workflow_dispatch:        # Tombol panggil pasukan manual
 
 permissions:
   contents: write
@@ -153,29 +196,61 @@ jobs:
         env:
           EVENT: ${{ github.event_name }}
         run: |
+          BENIH="pejuang"   # ganti kata ini untuk mengacak ulang seluruh pola libur
           ISTIRAHAT=false
-          ALASAN="Maju bertempur!"
 
           if [ "$EVENT" = "workflow_dispatch" ]; then
-            ALASAN="Dipanggil manual, pejuang wajib bertempur!"
+            echo "Dipanggil manual: pejuang wajib bertempur!"
           else
-            HARI=$(date -u +%u)
-            HASH=$(date -u +%Y%m%d | cksum | cut -d' ' -f1)
+            HARI_INI=$(( $(date -u +%s) / 86400 ))
+            POS=$(( $(date -u -d 2026-01-01 +%s) / 86400 ))
+            N=0
+            STATUS="kerja"
+            PANJANG=0
 
-            if [ "$HARI" = "7" ]; then
+            # Susun kalender: masa tempur dan masa libur bergantian dengan panjang acak
+            while true; do
+              # Masa tempur: 1 hari (15%), 2 hari (10%), atau 4-13 hari (75%)
+              H=$(echo "$BENIH-kerja-$N" | cksum | cut -d' ' -f1)
+              M=$(( H % 20 ))
+              if [ "$M" -le 2 ]; then PANJANG=1
+              elif [ "$M" -le 4 ]; then PANJANG=2
+              else PANJANG=$(( 4 + (H / 20) % 10 )); fi
+              if [ "$HARI_INI" -lt $(( POS + PANJANG )) ]; then STATUS="kerja"; break; fi
+              POS=$(( POS + PANJANG ))
+
+              # Masa libur: 1 hari (65%), 2 hari (25%), atau 7 hari (10%)
+              H=$(echo "$BENIH-libur-$N" | cksum | cut -d' ' -f1)
+              M=$(( H % 20 ))
+              if [ "$M" -le 12 ]; then PANJANG=1
+              elif [ "$M" -le 17 ]; then PANJANG=2
+              else PANJANG=7; fi
+              if [ "$HARI_INI" -lt $(( POS + PANJANG )) ]; then STATUS="libur"; break; fi
+              POS=$(( POS + PANJANG ))
+              N=$(( N + 1 ))
+            done
+
+            if [ "$STATUS" = "libur" ]; then
               ISTIRAHAT=true
-              ALASAN="Hari Minggu: hari suci, pejuang beristirahat."
-            elif [ $((HASH % 6)) -eq 0 ]; then
-              ISTIRAHAT=true
-              ALASAN="Hari pemulihan: pejuang mengobati luka."
-            elif [ $((RANDOM % 5)) -eq 0 ]; then
-              ISTIRAHAT=true
-              ALASAN="Pasukan ini tersesat di hutan belantara."
+              case "$PANJANG" in
+                1) echo "Libur sehari: pejuang menyeka keringat." ;;
+                2) echo "Libur dua hari: pejuang mengobati luka." ;;
+                *) echo "Libur seminggu: pejuang bertapa di gunung." ;;
+              esac
+            else
+              HH=$(echo "$BENIH-hari-$HARI_INI" | cksum | cut -d' ' -f1)
+              if [ $(( HH % 10 )) -lt 3 ]; then
+                echo "Hari lembur: seluruh pasukan menyerbu!"
+              elif [ $(( RANDOM % 5 )) -eq 0 ]; then
+                ISTIRAHAT=true
+                echo "Pasukan ini tersesat di hutan belantara."
+              else
+                echo "Hari tempur biasa: maju!"
+              fi
             fi
           fi
 
           echo "istirahat=$ISTIRAHAT" >> "$GITHUB_OUTPUT"
-          echo "$ALASAN"
 
       - name: Bangunkan pasukan (Checkout)
         if: steps.kalender.outputs.istirahat == 'false'
@@ -306,7 +381,7 @@ Kadang butuh **beberapa jam** sebelum kemenangan tampil di layar. Bersabarlah, w
 <br/>
 
 - Jadwal GitHub sering terlambat, itu normal
-- Mungkin sedang hari libur sang pejuang (Minggu, hari pemulihan, atau pasukan tersesat). Coba klik **Run workflow** untuk memastikan
+- Mungkin sedang masa libur sang pejuang (sehari, dua hari, atau seminggu), atau pasukan itu tersesat. Coba klik **Run workflow** untuk memastikan semuanya normal
 - Repo yang lama tidak ada aktivitas bisa dinonaktifkan otomatis oleh GitHub. Buka tab **Actions** dan aktifkan kembali kalau ada tombolnya
 
 </details>
@@ -344,7 +419,7 @@ Bisa. Ubah baris `cron` di file workflow. Gunakan [crontab.guru](https://crontab
 
 <br/>
 
-**⚔️ Kotak hijau bukan akhir dari petualangan, tetapi hanya awal dari legenda. ⚔️**
+**⚔️ Kotak hijau bukan akhir dari petualangan, hanya awal dari legenda. ⚔️**
 
 <img src="https://capsule-render.vercel.app/api?type=waving&color=gradient&customColorList=12,20,24&height=120&section=footer" alt="Footer" />
 
